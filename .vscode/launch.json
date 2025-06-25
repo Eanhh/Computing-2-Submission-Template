@@ -5,12 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Run Web App – Firefox",
+            "name": "Run Web App - Firefox",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
             "reloadOnAttach": true,
             "file": "${workspaceFolder}/web-app/index.html",
+            "url": "http://localhost:8080/web-app/index.html",
+            "webRoot": "${workspaceFolder}",
             "preferences": {
                 "security.fileuri.strict_origin_policy": false
             },
@@ -27,8 +29,8 @@
                 "${workspaceFolder}/node_modules/**",
                 "<node_internals>/**"
             ],
-            // You'll need to change this line below to point to your module.
-            "program": "${workspaceFolder}/web-app/Module.js"
+          
+            "program": "${workspaceFolder}/web-app/main.js"
         },
         {
             "name": "Generate Docs",

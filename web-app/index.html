@@ -1,9 +1,172 @@
-<!-- In HTML Comments are written like this -->
-<!-- They can all be removed for your apps -->
-<!doctype html> <!-- This first line tells browsers to expect modern standard html 5 -->
-<html lang="en-gb"> <!-- This is indicates the page is written in British English, useful for accessibility -->
-<meta charset="utf-8"> <!-- This indicates how the file is encoded. utf-8 is standard -->
-<title>Your Web-app Title</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
-<link rel="stylesheet" href="default.css"> <!-- Import style sheet – default.css -->
-<link rel="icon" href="./assets/favicon.png"> <!-- Import 'Favorites Icon' – favicon.png -->
-<script type="module" src="main.js"></script> <!-- Load the main script. Must be type="module". Have only one of these -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- page title and linking css -->
+    <title>Alchemical Wizardry</title>
+    <link rel="stylesheet" href="../.docs-template/custom.css">
+    <link rel="stylesheet" href="customisation.css">
+</head>
+<body>
+    <!-- header section with title and status message -->
+    <header>
+        <h1>Alchemical Wizardry</h1>
+        <div id="status-banner" role="status" aria-live="polite"></div>
+    </header>
+    <!-- main layout with board and sidebar -->
+    <main class="game-container">
+        <!-- this is the grid where runes are placed -->
+        <div id="rune-grid" role="grid" aria-label="Game Board"></div>
+        <!-- right side panel showing next rune and restart -->
+        <aside class="game-info">
+            <h2>Next Rune</h2>
+            <div id="upcoming-rune-slot"></div>
+            <button id="restart-game-btn">Restart Game</button>
+        </aside>
+    </main>
+
+    <script type="module">
+        // importing game logic and constants from main.js
+        import {
+            createBoard,
+            getRandomRune,
+            placeRune,
+            processTurn,
+            hasWon,
+            hasLost,
+            BOARD_SIZE,
+            RUNE_TIERS
+        } from './game.js';
+
+        //core functions for playing the game in the console
+        window.spellLab = {
+            createBoard, getRandomRune, placeRune, processTurn, hasWon, hasLost, RUNE_TIERS
+        };
+        // game state
+        let gameBoard;
+        let currentRune;
+        let gameEnded = false;
+
+        const runeGrid = document.getElementById('rune-grid');
+        const upcomingRuneSlot = document.getElementById('upcoming-rune-slot');
+        const statusBanner = document.getElementById('status-banner');
+        const restartGameBtn = document.getElementById('restart-game-btn');
+        //Putting pictures from assets folder onto each rune, along with quantity
+        const RUNE_VISUALS = {
+            "Fire":    { image: './assets/fire.png', count: 1 },
+            "Magma":   { image: './assets/fire.png', count: 2 },
+            "Volcano": { image: './assets/fire.png', count: 3 },
+            "Earth":   { image: './assets/ingot.png', count: 1 },
+            "Metal":   { image: './assets/ingot.png', count: 2 },
+            "Tectonic":{ image: './assets/ingot.png', count: 3 },
+            "Water":   { image: './assets/water.png', count: 1 },
+            "Steam":   { image: './assets/water.png', count: 2 },
+            "Ocean":   { image: './assets/water.png', count: 3 },
+            "Primordial": { image: './assets/triforce.png', count: 1 }
+        };
+        // drawing all runes on the board
+        const renderGameBoard = () => {
+            runeGrid.innerHTML = '';
+            for (let y = 0; y < BOARD_SIZE; y++) {
+                for (let x = 0; x < BOARD_SIZE; x++) {
+                    const runeOnTile = gameBoard[y][x];
+                    const runeTile = document.createElement('div');
+                    runeTile.classList.add('rune-tile');
+                    runeTile.dataset.x = x;
+                    runeTile.dataset.y = y;
+
+                    if (runeOnTile) {
+                        runeTile.classList.add('occupied');
+                        const runeIcon = document.createElement('div');
+                        runeIcon.classList.add('rune', `rune-${runeOnTile.name}`);
+                        
+                        const visual = RUNE_VISUALS[runeOnTile.name];
+                        if (visual) {
+                            for (let i = 0; i < visual.count; i += 1) {
+                                const imgElement = document.createElement('img');
+                                imgElement.src = visual.image;
+                                imgElement.alt = runeOnTile.name;
+                                imgElement.classList.add('rune-image');
+                                runeIcon.appendChild(imgElement);
+                            }
+                        }
+                        runeTile.appendChild(runeIcon);
+                    }
+                    runeGrid.appendChild(runeTile);
+                }
+            }
+        };
+        // showing the upcoming rune in the right panel to be next placed
+        const renderUpcomingRune = () => {
+            upcomingRuneSlot.innerHTML = '';
+            if (currentRune) {
+                const runeIcon = document.createElement('div');
+                runeIcon.classList.add('rune', `rune-${currentRune.name}`);
+                
+                const visual = RUNE_VISUALS[currentRune.name];
+                if (visual) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = visual.image;
+                    imgElement.alt = currentRune.name;
+                    imgElement.style.width = '80%';
+                    imgElement.style.height = '80%';
+                    runeIcon.appendChild(imgElement);
+                }
+                upcomingRuneSlot.appendChild(runeIcon);
+            }
+        };
+        // showing a win, lose, or neutral message at the top
+        const showGameStatus = (msg, type) => {
+            statusBanner.textContent = msg;
+            statusBanner.style.color = (type === 'win')
+                ? 'var(--win-color)'
+                : (type === 'lose') ? 'var(--lose-color)' : 'var(--text-light)';
+        };
+         //handles when a player clicks a tile
+        const handleTileClick = (event) => {
+            if (gameEnded) return;
+
+            const tile = event.target.closest('.rune-tile');
+            if (!tile || tile.classList.contains('occupied')) return;
+
+            const pos = {
+                x: parseInt(tile.dataset.x, 10),
+                y: parseInt(tile.dataset.y, 10)
+            };
+            // placing and processing rune
+            const updatedBoard = placeRune(gameBoard, pos, currentRune);
+            gameBoard = processTurn(updatedBoard, pos);
+
+            renderGameBoard();
+
+            if (hasWon(gameBoard)) {
+                gameEnded = true;
+                showGameStatus("You forged the Primordial Rune! You have succeeded in your wizardly duties.", 'win');
+                upcomingRuneSlot.innerHTML = '';
+            } else if (hasLost(gameBoard)) {
+                gameEnded = true;
+                showGameStatus("The board is full. You have failed in your wizardly duties.", 'lose');
+                upcomingRuneSlot.innerHTML = '';
+            } else {
+                currentRune = getRandomRune();
+                renderUpcomingRune();
+            }
+        };
+        //reset game state and start fresh for new game
+        const startNewGame = () => {
+            gameEnded = false;
+            gameBoard = createBoard();
+            currentRune = getRandomRune();
+            renderGameBoard();
+            renderUpcomingRune();
+            showGameStatus("Place a rune upon thy board");
+        };
+        //event listers
+        runeGrid.addEventListener('click', handleTileClick);
+        restartGameBtn.addEventListener('click', startNewGame);
+        //boots game when page loads
+        startNewGame();
+    </script>
+</body>
+</html>

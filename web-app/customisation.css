@@ -1,0 +1,171 @@
+/* setting color theme and font variables */
+:root {
+    --bg-dark: #2c3e50;
+    --bg-medium: #34495e;
+    --cell-bg: #95a5a6;
+    --text-light: #ecf0f1;
+    --accent-color: #3498db;
+    --win-color: #2ecc71;
+    --lose-color: #e74c3c;
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* setting rune colors */
+    --rune-fire: #c0392b;
+    --rune-water: #2980b9;
+    --rune-earth: #964B00;
+    --rune-magma: #e74c3c;
+    --rune-steam: #3498db;
+    --rune-metal: #9b59b6;
+    --rune-volcano: #d35400;
+    --rune-ocean: #27ae60;
+    --rune-tectonic: #f1c40f;
+    --rune-primordial: linear-gradient(45deg, #f1c40f, #e74c3c, #2980b9, #2ecc71);
+}
+/* styling the full page layout and font */
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+/* top header layout */
+header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+/* showing game messages at the top */
+#status-banner {
+    margin-top: 1rem;
+    font-size: 1.5em;
+    font-weight: bold;
+    min-height: 30px;
+    transition: color 0.3s;
+}
+/* making the layout centered */
+.game-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 1rem;
+}
+/* creating the main game board grid */
+#rune-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 60px);
+    grid-template-rows: repeat(7, 60px);
+    gap: 5px;
+    background-color: var(--bg-medium);
+    border: 5px solid var(--bg-medium);
+    border-radius: 8px;
+    padding: 5px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+/* styling each clickable cell (where the runes go) */
+.rune-tile {
+    width: 60px;
+    height: 60px;
+    background-color: var(--cell-bg);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.rune-tile:hover:not(.occupied) {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
+/* styling the game info panel (right side) */
+.game-info {
+    background-color: var(--bg-medium);
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 200px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+#upcoming-rune-slot {
+    width: 80px;
+    height: 80px;
+    margin: 10px auto;
+    border: 2px solid var(--text-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #5dade2;
+}
+/* sizing each image inside a rune  */
+.rune-image {
+    width: 45%;
+    height: 45%;
+    object-fit: contain;
+    /*Making the image background transparent */
+    background-color: transparent;
+}
+/* base style for any rune with wrap for fitting multiple icons */
+.rune {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Allow multiple images to wrap to fit in a rune */
+    padding: 2px; 
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-in-out;
+    background-size: cover;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* all runes have their background color set */
+.rune-Fire { background-color: var(--rune-fire); }
+.rune-Water { background-color: var(--rune-water); }
+.rune-Earth { background-color: var(--rune-earth); }
+.rune-Magma { background-color: var(--rune-magma); }
+.rune-Steam { background-color: var(--rune-steam); }
+.rune-Metal { background-color: var(--rune-metal); }
+.rune-Volcano { background-color: var(--rune-volcano); }
+.rune-Ocean { background-color: var(--rune-ocean); }
+.rune-Tectonic { background-color: var(--rune-tectonic); }
+.rune-Primordial { background: var(--rune-primordial); }

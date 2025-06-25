@@ -1,3 +1,30 @@
+# Game Rules
+## Objective: To craft the Primordial Rune 
+## Basic Rules:
+The game is played on a 7x7 grid
+
+Each turn, you are given a basic tier 1 rune (fire, water, earth)
+
+You must place this rune on any empty square on the board
+
+## Combining runes:
+
+If you place a rune and it creates a line of 3 or more identical runes (horizontal or vertical),
+they will combine and create one more powerful rune in the location the last rune is placed.
+## Upgrade paths:
+
+3 tier 1 runes upgrade to tier 2. 
+
+3 tier 2 runes upgrade to tier 3.
+## Win condition:
+
+To win you must match a line of 3 tier 3 runes (horizontally or vertically)
+this forges the primordial rune and you win
+### Difficulty
+
+I have experimented with different board sizes (6x6 and 7x7) and quantities of rune types (3 to 4), 
+and decided to go with 3 types and a 7x7 board for easier solvability in this assignment
+
 # Computing 2 Coursework Submission.
 **CID**: 02106611
 
