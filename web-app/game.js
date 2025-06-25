@@ -91,7 +91,7 @@ export const findMatches = function (board){
                 currentMatch.push({ x, y });
             //if the rune detected is same as others
             else if (cell && runesAreSame(cell, board[currentMatch[0].y]
-                [currentMatch[0].x])) 
+                [currentMatch[0].x]))
                 //continue looking
                 currentMatch.push({ x, y });
             else {
@@ -216,7 +216,7 @@ export const resolveMatches = function (board, matches, placementPos) {
         let group = matches[i];
         for (let j = 0; j < group.length; j++){
             let p = group[j];
-            let key = p.x + "," + p.y; 
+            let key = p.x + "," + p.y;
             //turning the x and y values into strings to use as key for array
             allMatchedCells[key] = true; //marking this cell as matched
         }
@@ -224,7 +224,7 @@ export const resolveMatches = function (board, matches, placementPos) {
 
     // clearing the cells where the runes have been matched
     for (let key in allMatchedCells) {
-        let parts = key.split(','); //turning the string back into numbers
+        let parts = key.split(","); //turning the string back into numbers
         let x = parseInt(parts[0], 10);
         let y = parseInt(parts[1], 10);
         newBoard[y][x] = null; //making the cell empty again
@@ -280,7 +280,7 @@ export const resolveMatches = function (board, matches, placementPos) {
 
         // finding position w here the upgraded rune goes
         let upgradePos = null;
-        for (let j = 0; j < match.length; j++) 
+        for (let j = 0; j < match.length; j++)
             {
             let p = match[j];
             if (p.x === placementPos.x && p.y === placementPos.y){

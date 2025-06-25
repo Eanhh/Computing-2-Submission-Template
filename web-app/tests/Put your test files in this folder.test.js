@@ -103,7 +103,8 @@ describe("alchemical wizardly game logic testing", function (){
         });
         //test to make sure placing a rune in a spot that already
         // has a rune shouldnt change the board
-        it("should not place a rune if the cell is already occupied", function(){
+        it("should not place a rune if the cell is already occupied", function()
+        {
             const board = createBoard();
             const pos = {x: 1,y: 1};
 
@@ -113,7 +114,7 @@ describe("alchemical wizardly game logic testing", function (){
             //putting an air rune in the same position
             assert.strictEqual(newBoard[pos.y][pos.x], RUNE_TIERS.FIRE);
             //the fire rune should not get replaced by the air one
-            assert.strictEqual(board[pos.y][pos.x], RUNE_TIERS.FIRE); 
+            assert.strictEqual(board[pos.y][pos.x], RUNE_TIERS.FIRE);
             //the original board should be the same
         })
         //test to make sure placing a rune that doesnt make a match doesnt
@@ -121,7 +122,7 @@ describe("alchemical wizardly game logic testing", function (){
         it("should not change anything else if no match occurs", function(){
             const board =createBoard();
             const pos = { x: 2, y: 2 };
-            
+
             const boardWithaRune = placeRune(board, pos, RUNE_TIERS.FIRE);
             //placing a fire rune with no other runes around
             const resultBoard = processTurn(boardWithaRune, pos);
@@ -137,7 +138,8 @@ describe("alchemical wizardly game logic testing", function (){
                     if (resultBoard[y][x] !== null) changed = true;
                 }
             }
-            assert.strictEqual(changed, false, "none of the other cells should change if no matches occur")
+            assert.strictEqual(changed, false,
+            "none of the other cells should change if no matches occur")
         })
     });
     //tests to make sure winning and losing works as intended
